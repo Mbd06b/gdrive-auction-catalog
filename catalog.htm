@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+
+<!-- HTML5 shim, for IE6-8 support of HTML elements
+ I could have not gotten this working without the help of...
+ http://michelleminkoff.com/2010/11/22/using-google-spreadsheets-as-your-database/
+
+
+<!-- (DISABLED*) HTML5 shim, for IE6-8 support of HTML elements 
+*DISABLED: capabilities are included and superceded by the modernizer js script 
+<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>  -->
+
+	  <meta charset="UTF-8" />
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+      <title>NTCA Auction Catalog</title>
+      <script src="../sharedJS/modernizr-1.5.js"></script>
+      
+      <!--  jQuery used for call Google Spreadsheet Data  -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+	  <link href="catalog.css" rel="stylesheet" type="text/css" />  
+	  <!--  link href="catalogmobile.css" rel="stylesheet" type="text/css" media="only screen and (max-width: 500px)" --> 
+	
+     
+
+  
+<script type ='text/javascript' >	
+	//for the Facebook Share buttons, we need an absolute link.  We append the #'itemnum' at the end of the link to jump directly to the pin
+	var absolute_url = 'https://MatthewBDowell.bitbucket.io/Projects/catalog.htm#';
+	var gSheetDataURL = 'https://spreadsheets.google.com/feeds/list/18K6xKI71ICN6Sc_fbuUQIpIp5bTO0lXoVSHU4S9WOZw/od6/public/values?alt=json'; 
+	
+	
+	//this will be executed after we "fetch" the contents of a spreadsheet. The json parameter will hold our spreadsheet's data
+	 function displayContent(json) {
+		  
+		 //start an html section for our pins.
+		 var pre_html = '<section class="wrapper">\
+	    					<div id="columns">';
+	    
+	     //Create an empty string to hold the HTML. We will put spreadsheet data here.
+	     var actual_html = '';
+	    
+	     //After we grab the table, close the HTML table.
+	     var post_html = '</div><!-- "columns"  -->\
+	    	 			</section><!-- "wrapper"  -->'
+	     
+	     //figure out how many rows our spreadsheet has
+	     var len = json.feed.entry.length
+	
+	    //loop through the spreadsheet, gathering data
+	     for (var i = 0; i < len; i++) {
+	         //for each row, add the following to actual HTML, grabbing it as a list, and then joining the list together as one long string.
+	         //Uses HTML for table cells, and then grabs attributes from the spreadsheet, using appropriate syntax. Enter your table header in the Google spreadsheet between            
+	         //the gsx$ and .$t.
+	         actual_html += [
+	                  	'<div class="pin scale all ',  				//space after pin makes this a double class, "pin scale all [category]" to handle styles for all pins, and category parameter target for the display filter
+	                  	json.feed.entry[i].gsx$itemcat.$t,
+	                  	'" id="pin',
+	                  	json.feed.entry[i].gsx$itemnum.$t, //custom id for href anchoring. 
+	                  	'">',
+	                  	
+		         			'<img src="',
+		         			json.feed.entry[i].gsx$itemimg.$t,
+		         			'" alt="product image" />',
+		        			
+		         			'<h4 id="',
+		         			json.feed.entry[i].gsx$itemcat.$t,
+		         			'">',
+		         			json.feed.entry[i].gsx$displaycategory.$t, 
+		         			'</h4>',
+		         			
+		         			'<h3>',
+		         			json.feed.entry[i].gsx$itemname.$t, 
+		         			'</h3>',
+		         			
+		         			'<span class="sponsors">Sponsor: ',
+		         			json.feed.entry[i].gsx$itemsponsor.$t, 
+		         			'</span>',
+		         			
+		         			'<p>',
+		         			json.feed.entry[i].gsx$itemdesc.$t,
+		         			'</p>',
+		         			'<span class="prices">',
+		         			json.feed.entry[i].gsx$itemvalue.$t,
+		         			'</span>',
+		         			
+		         			'<button id="',
+		         			i,
+		         			'" onclick="shareButtonFunc(this.id)" data-href="',   //pass GSHEET row '###' to shareButtonFunc on click. 
+		         			absolute_url + json.feed.entry[i].gsx$itemnum.$t,
+		         			'">Share!</button>',
+	         			
+	         			'</div>'
+	         ].join('');
+	     }
+	     //put all three of our HTML strings into the pins_container div we made in the page <body>
+	     document.getElementById('pins_container').innerHTML = pre_html + actual_html + post_html;
+	     
+	 } 
+	
+	//toggles the menu bars button action
+	 function menuFunc(x) {
+		    x.classList.toggle("change"); //change is a css selector
+		}
+	 
+ </script>
+ 
+ 
+</head>
+<body>
+
+<noscript>
+Uh Oh, This page requires Javascript, which has been disabled for some reason.  
+</noscript>
+
+<script>
+//Google Analytics
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-29691814-2', 'auto');
+ga('send', 'pageview');
+</script>  
+
+<!-- Facebook SDK script for integrations (Share, Like, and Comments) -->
+	<script>
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '1277047792318572',
+	      xfbml      : true,
+	      version    : 'v2.8'
+	    });
+	  };
+	
+	  (function(d, s, id){
+	     var js, fjs = d.getElementsByTagName(s)[0];   	
+	     if (d.getElementById(id)) {return;}     
+	     js = d.createElement(s); js.id = id;	     
+	     js.src = "//connect.facebook.net/en_US/sdk.js";
+	     fjs.parentNode.insertBefore(js, fjs);
+	   }(document, 'script', 'facebook-jssdk'));
+	  
+	  
+	function shareButtonFunc(rownum){ //from html pin id this is the corresponding row number from gSHEET. 
+			 
+		$.getJSON(gSheetDataURL, function(json) {
+			 	
+			//Facebook Share API Call, with custom inputs from gSHEET json input. 
+			FB.ui({
+					  method: 'share',
+					  name: 'Facebook Dialogs',
+					  title: 'NTCA Auction: ' + json.feed.entry[rownum].gsx$itemname.$t,
+					  href: absolute_url + "pin" + json.feed.entry[rownum].gsx$itemnum.$t,	                  
+	                  link: 'https://developers.facebook.com/docs/dialogs/',
+	                  picture: json.feed.entry[rownum].gsx$itemimg.$t,                  	
+	                  description: 'North Texas Christian Academy presents! ' + json.feed.entry[rownum].gsx$itemdesc.$t,
+	                  caption: 'Sponsored By: ' + json.feed.entry[rownum].gsx$itemsponsor.$t
+			              					   
+					  }, function(response){});
+	
+		 });
+		//calling out of scope of $.getJSON will not work -- json.feed.entry[rownum].gsx$itemnum.$t   
+	 }
+	</script> 
+
+<header class="toolbar">
+	<div class="container" onclick="menuFunc(this)">
+		<div class="menuarea">
+			 <div class="dynosquare" title="Auction Filter">
+				<div class="bar1"></div>
+				<div class="bar2"></div>
+				<div class="bar3"></div>
+				<div class="bar4"></div>
+			 </div>
+	 
+			<button class=filterCategory data-rel="all"><strong>ALL</strong></button>
+			<button class=filterCategory data-rel="auction">Auction</button>
+			<button class=filterCategory data-rel="art">Art</button>
+			<button class=filterCategory data-rel="beauty">Beauty &amp; Fashion</button>
+			<button class=filterCategory data-rel="food">Delectable</button>
+			<button class=filterCategory data-rel="entertainment">Entertainment</button>
+			<button class=filterCategory data-rel="home">Home</button>
+			<button class=filterCategory data-rel="services">Services</button>
+			<button class=filterCategory data-rel="sports">Sports</button>
+			<button class=filterCategory data-rel="travel">Travel</button>
+			<button class=filterCategory data-rel="teacher">Teacher Items</button>
+			<button class=filterCategory data-rel="memorabilia">Memorabilia</button>
+			<button class=filterCategory data-rel="kids">Kids Items</button>
+			<button class=filterCategory data-rel="desserts">Desserts</button>
+			<button class=filterCategory data-rel="raffle">Raffle</button>
+	   </div>
+	</div>
+</header>	
+
+
+<!--  GSHEET TO HTML container -->
+<div id="pins_container"></div>
+<!-- Grab the data from our google spreadsheet in json format, using the "callback" to trigger displayContent()  -->
+<script src="https://spreadsheets.google.com/feeds/list/18K6xKI71ICN6Sc_fbuUQIpIp5bTO0lXoVSHU4S9WOZw/od6/public/values?alt=json-in-script&amp;callback=displayContent" type="text/javascript"></script>
+
+<!-- filterCategory function onclick -->
+	<script>
+	//class selection of buttons has to occur after pin generation. 
+	$(function() {
+		 
+		var selectedClass = "";
+		
+		 $(".filterCategory").click(function(){  //jQuery selects button class .filterCategory, when the button is clicked, execute function
+		 	
+				selectedClass = $(this).attr("data-rel");  //whatever button is pushed becomes 'this' + data-rel which is the associated pin class="pin [category]" to filter. 
+				
+				$("#columns").fadeTo(100, 0.1); //the wrapper div. 
+				$("#columns div").not("."+selectedClass).fadeOut().removeClass('pin');
+			   
+				setTimeout(function() {
+			      $("."+selectedClass).fadeIn().addClass('pin');
+			      $("#columns").fadeTo(300, 1);
+			    }, 300); 	
+			});
+	});
+	
+	</script>
+	
+</body>
+</html>
