@@ -14,7 +14,8 @@
 	  <meta charset="UTF-8" />
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
       <title>NTCA Auction Catalog</title>
-      <script src="../sharedJS/modernizr-1.5.js"></script>
+      <?php include_once("../common/includes.php"); ?>
+
       
       <!--  jQuery used for call Google Spreadsheet Data  -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
